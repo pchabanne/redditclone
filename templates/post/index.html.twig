@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PostController!{% endblock %}
+
+{% block body %}
+<div class="bg-white col-md-12">
+    <div class="card post mb-0">
+        <div class="card-body">
+            <h6><a class="userBtn" href='{{path('subreddit', {'title': post.subreddit.title})}}'>r/{{post.subreddit.title}}</a> Posted by <a class='userBtn'
+                    href='{{path('showUser', {'username' : post.user.username})}}'>{{post.user.username}}</a>
+                {{post.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
+            <h1>{{post.title}}</h1>
+            <div class="card-text">{{post.content}}</div>
+        </div>
+    </div>
+    {% for comment in post.comments %}
+        <div class="card comment mb-0 mt-0">
+        <div class="card-body">
+            <h6>Posted by <a class='userBtn' href='{{path('showUser', {'username' : comment.user.username})}}'>{{comment.user.username}}</a>
+                {{comment.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
+            <div class="card-text">{{comment.content}}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+{% endblock %}

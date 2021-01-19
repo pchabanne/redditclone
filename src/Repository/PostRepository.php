@@ -35,6 +35,53 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
     */
+    /**
+     * return all posts ordered by date
+     *
+     * @return Post[]
+     */
+    public function findAllOrderByDate()
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.created_at', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * return all posts of an user
+     *
+     * @param User $user
+     * @return Post[]
+     */
+    public function findAllByUser($user)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user = :user')
+            ->orderBy('p.created_at', 'DESC')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * return all posts from the subreddit
+     *
+     * @param Subreddit $subreddit
+     * @return void
+     */
+    public function findAllBySubreddit($subreddit)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.subreddit = :subreddit')
+            ->orderBy('p.created_at', 'DESC')
+            ->setParameter('subreddit', $subreddit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     /*
     public function findOneBySomeField($value): ?Post

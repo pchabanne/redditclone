@@ -6,9 +6,13 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity("email")
+ * @UniqueEntity("username")
  */
 class User
 {
@@ -20,7 +24,9 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=12, unique=true)
+     * @Assert\Regex("^[A-Za-z0-9_-]*$")
+     * @Assert\Unique
      */
     private $username;
 
@@ -30,7 +36,9 @@ class User
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Email
+     * @Assert\Unique
      */
     private $email;
 

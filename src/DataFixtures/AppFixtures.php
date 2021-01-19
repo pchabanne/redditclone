@@ -45,16 +45,18 @@ class AppFixtures extends Fixture
                 $post->setTitle($faker->sentence(6))
                 ->setContent($faker->paragraph(3))
                 ->setUser(($users->get(array_rand($users->toArray()))))
-                ->setSubreddit($subreddits->get(array_rand($subreddits->toArray())));
+                ->setSubreddit($subreddits->get(array_rand($subreddits->toArray())))
+                ->setCreatedAt($faker->dateTimeBetween('-1 years', 'now'));
             $posts->add($post);
             $manager->persist($post);
         }
 
-        for($i = 0;$i<40;$i++){
+        for($i = 0;$i<150;$i++){
             $comment = new Comment();
             $comment->setContent($faker->sentence(12))->setPost($posts->get(array_rand($posts->toArray())))->setUser($users->get(array_rand($users->toArray())));
             $manager->persist($comment);
         }
+
 
 
         $manager->flush();

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SubredditRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,7 +21,11 @@ class Subreddit
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=15)
+     * @Assert\Regex(
+     *      pattern= "^[A-Za-z0-9]*$",
+     *      match=false
+     * )
      */
     private $title;
 

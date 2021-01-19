@@ -1,0 +1,23 @@
+    body {
+        background-color: #dae0e6;
+    }
+
+    .btn {
+        padding: 0;
+    }
+
+    h6 {
+        font-size: 10px;
+    }
+
+    .userBtn {
+        position: relative;
+        z-index: 2;
+    }
+    .post{
+        border: none;
+        border-bottom: solid 1px #e5e5e5;
+    }
+    .comment{
+        border: none;
+    }

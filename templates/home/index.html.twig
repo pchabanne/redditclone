@@ -1,27 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome on clonereddit{% endblock %}
+{% block title %}Welcome on Redditclone{% endblock %}
 
 {% block body %}
-<style>
-    body{
-        background-color: lightgrey;
-    }
-    .btn{
-        padding:0;
-    }
-</style>
-{% for post in posts %}
 
-<div class="card h-5 d-inline-block col-md-10 mb-0">
-    <div class="card-body">
-            <h6><a href='/'>r/{{post.subreddit.title}}</a> Posted by <a href='/'>{{post.user.username}}</a></h6>
-            <a href='/'class='btn stretched-link'>{{post.title}}</a>
-        <div class="card-text">{{post.content | slice(0, 100)}}...</div>
-    </div>
-</div>
-
-
-{% endfor %}
+{% include 'post/showPosts.html.twig' %}
 
 {% endblock %}

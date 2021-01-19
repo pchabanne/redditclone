@@ -19,6 +19,22 @@ class SubredditRepository extends ServiceEntityRepository
         parent::__construct($registry, Subreddit::class);
     }
 
+    /**
+     * return a subreddit by its name
+     *
+     * @param string $title
+     * @return Subreddit|null
+     */
+    public function findOneByTitle($title): ?Subreddit
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     // /**
     //  * @return Subreddit[] Returns an array of Subreddit objects
     //  */
