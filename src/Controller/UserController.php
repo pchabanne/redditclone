@@ -14,7 +14,7 @@ class UserController extends AbstractController
 {
     /**
      * return the user's page
-     * @Route("/{username}", name="showUser")
+     * @Route("user/{username}", name="user.show")
      * @param EntityManagerInterface $em
      * @param string $username
      * @return Response
