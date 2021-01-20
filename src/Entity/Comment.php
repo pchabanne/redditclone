@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
@@ -39,11 +42,24 @@ class Comment
      */
     private $created_at;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="commentParent", orphanRemoval=true)
+     */
+    private $comments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Comment::class, inversedBy="comments")
+     * @ORM\JoinColumn(name="comment_id", referencedColumnName="id")
+     */
+    private $commentParent;
+
     /**
      * comment constructor
      */
     public function __construct()
     {
+        $this->comments = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
 
@@ -148,4 +164,45 @@ class Comment
 
         return $this;
     }
+
+
+    public function getCommentParent() :?Comment
+    {
+        return $this->commentParent;
+    }
+
+    public function setCommentParent(Comment $commentParent) :?Comment
+    {
+        $this->commentParent = $commentParent;
+        return $this;
+    }
+
+    public function getComments() :Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setPost($this->post);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getPost() === $this) {
+                $comment->setComment(null);
+            }
+        }
+        return $this;
+    }
+
+
+
 }

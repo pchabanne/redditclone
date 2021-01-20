@@ -13,7 +13,9 @@
             <div class="card-text">{{post.content}}</div>
         </div>
     </div>
+
     {% for comment in post.comments %}
+    {% if comment.commentParent == null %}
         <div class="card comment mb-0 mt-0">
         <div class="card-body">
             <h6>Posted by <a class='userBtn' href='{{path('user.show', {'username' : comment.user.username})}}'>{{comment.user.username}}</a>
@@ -21,6 +23,16 @@
             <div class="card-text">{{comment.content}}</div>
         </div>
     </div>
+    {% for subcomment in comment.comments %}
+        <div class="card comment mb-0 mt-0 ml-5">
+        <div class="card-body p-0">
+            <h6>Posted by <a class='userBtn' href='{{path('user.show', {'username' : subcomment.user.username})}}'>{{subcomment.user.username}}</a>
+                {{subcomment.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
+            <div class="card-text">{{subcomment.content}}</div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endfor %}
 </div>
 

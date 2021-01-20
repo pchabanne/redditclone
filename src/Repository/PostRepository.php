@@ -66,6 +66,17 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findOneByID($id){
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.id = :id')
+            ->select('p.content')
+            ->orderBy('p.created_at', 'DESC')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     /**
      * return all posts from the subreddit
      *
@@ -80,6 +91,18 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('subreddit', $subreddit)
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function findAllBySubreddit2($subreddit)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.subreddit = :subreddit')
+            ->select('p.title')
+            ->orderBy('p.created_at', 'DESC')
+            ->setParameter('subreddit', $subreddit)
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 
