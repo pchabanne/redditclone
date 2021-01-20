@@ -2,7 +2,7 @@
 <div class="card col-md-10 mb-0">
     <div class="card-body">
             <h6><a class="userBtn" href='{{path('subreddit', {'title': post.subreddit.title})}}'>r/{{post.subreddit.title}}</a> Posted by <a class='userBtn' href='{{path('showUser', {'username' : post.user.username})}}'>{{post.user.username}}</a> {{post.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
-            <p><a href='{{path('post', {'id': post.id})}}'class='btn stretched-link'>{{post.title}}</a></p>
+            <p><a href='{{path('post.show', {'slug': post.slug,'id': post.id, 'subreddit': post.subreddit.title})}}'class='btn stretched-link'>{{post.title}}</a></p>
         <div class="card-text">{{post.content | slice(0, 100)}}...</div>
     </div>
 </div>

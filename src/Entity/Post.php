@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -93,6 +94,16 @@ class Post
         $this->title = $title;
 
         return $this;
+    }
+    
+    /**
+     * return slug of the title
+     *
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return (new Slugify())->slugify($this->title);
     }
 
     /**

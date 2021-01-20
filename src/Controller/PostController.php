@@ -13,14 +13,24 @@ class PostController extends AbstractController
 {
     /**
      * return the post's page
-     * @Route("/post/{id}", name="post")
+     * @Route("r/{subreddit}/{slug}-{id}", name="post.show", requirements={"slug": "[a-z0-9\-]*"})
      * @param integer $id
      * @param PostRepository $postRepository
      * @return Response
      */
-    public function index($id, PostRepository $postRepository): Response
+    public function index(Post $post, $slug, $subreddit, PostRepository $postRepository): Response
     {
-        $post = $postRepository->find($id);
+        $postSubreddit = $post->getSubreddit()->getTitle();
+        $postSlug = $post->getSlug();
+
+        if($slug != $postSlug || $subreddit != $postSubreddit){
+            return $this->redirectToRoute('post.show', [
+                'id' => $post->getId(),
+                'slug' => $postSlug,
+                'subreddit' => $postSubreddit,
+            ], 301);
+        }
+        
         return $this->render('post/index.html.twig', [
             'post' => $post,
         ]);

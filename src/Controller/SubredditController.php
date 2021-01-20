@@ -13,7 +13,7 @@ class SubredditController extends AbstractController
 {
     /**
      * return a subreddit's homepage
-     *
+     * @Route("/r/{title}", name="subreddit")
      * @param EntityManagerInterface $em
      * @param string $title
      * @return Response
