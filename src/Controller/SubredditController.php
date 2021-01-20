@@ -12,7 +12,11 @@ use App\Entity\Post;
 class SubredditController extends AbstractController
 {
     /**
-     * @Route("/r/{title}", name="subreddit")
+     * return a subreddit's homepage
+     *
+     * @param EntityManagerInterface $em
+     * @param string $title
+     * @return Response
      */
     public function index(EntityManagerInterface $em, $title): Response
     {

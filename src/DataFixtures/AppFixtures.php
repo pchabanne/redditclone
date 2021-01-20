@@ -14,6 +14,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class AppFixtures extends Fixture
 {
+
+    /**
+     * load data in the database
+     *
+     * @param ObjectManager $manager
+     * @return void
+     */
     public function load(ObjectManager $manager)
     {
         // $product = new Product();

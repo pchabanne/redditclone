@@ -6,10 +6,12 @@ use App\Repository\SubredditRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=SubredditRepository::class)
+ * @UniqueEntity("title")
  */
 class Subreddit
 {
@@ -21,7 +23,7 @@ class Subreddit
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=15, unique=true)
      * @Assert\Regex(
      *      pattern= "^[A-Za-z0-9]*$",
      *      match=false
@@ -34,21 +36,40 @@ class Subreddit
      */
     private $posts;
 
+    /**
+     * subreddit constructor
+     */
     public function __construct()
     {
         $this->posts = new ArrayCollection();
     }
 
+    /**
+     * get the id of the subreddit
+     *
+     * @return integer|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * get the title of the subreddit
+     *
+     * @return string|null
+     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
+    /**
+     * set the title of the subreddit
+     *
+     * @param string $title
+     * @return self
+     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
@@ -57,13 +78,21 @@ class Subreddit
     }
 
     /**
-     * @return Collection|Post[]
+     * get all posts of the subreddit
+     *
+     * @return Collection
      */
     public function getPosts(): Collection
     {
         return $this->posts;
     }
 
+    /**
+     * add a post to the subreddit
+     *
+     * @param Post $post
+     * @return self
+     */
     public function addPost(Post $post): self
     {
         if (!$this->posts->contains($post)) {
@@ -74,6 +103,12 @@ class Subreddit
         return $this;
     }
 
+    /**
+     * remove a post from the subreddit
+     *
+     * @param Post $post
+     * @return self
+     */
     public function removePost(Post $post): self
     {
         if ($this->posts->removeElement($post)) {

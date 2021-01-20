@@ -52,22 +52,41 @@ class User
      */
     private $comments;
 
+    /**
+     * user constructor
+     */
     public function __construct()
     {
         $this->post = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
 
+    /**
+     * get the id of the user
+     *
+     * @return integer|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * get the username of the user
+     *
+     * @return string|null
+     */
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
+    /**
+     * set the username of the user
+     *
+     * @param string $username
+     * @return self
+     */
     public function setUsername(string $username): self
     {
         $this->username = $username;
@@ -75,11 +94,22 @@ class User
         return $this;
     }
 
+    /**
+     * get the password of the user
+     *
+     * @return string|null
+     */
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
+    /**
+     * set the password of the user
+     *
+     * @param string $password
+     * @return self
+     */
     public function setPassword(string $password): self
     {
         $this->password = $password;
@@ -87,11 +117,22 @@ class User
         return $this;
     }
 
+    /**
+     * get the user's email
+     *
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * set the user's email
+     *
+     * @param string $email
+     * @return self
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -100,13 +141,21 @@ class User
     }
 
     /**
-     * @return Collection|Post[]
+     * get all posts posted by this user
+     *
+     * @return Collection
      */
     public function getPost(): Collection
     {
         return $this->post;
     }
 
+    /**
+     * add a post posted by this user
+     *
+     * @param Post $post
+     * @return self
+     */
     public function addPost(Post $post): self
     {
         if (!$this->post->contains($post)) {
@@ -117,6 +166,12 @@ class User
         return $this;
     }
 
+    /**
+     * remove a post posted by this user
+     *
+     * @param Post $post
+     * @return self
+     */
     public function removePost(Post $post): self
     {
         if ($this->post->removeElement($post)) {
@@ -129,8 +184,11 @@ class User
         return $this;
     }
 
+   
     /**
-     * @return Collection|Comment[]
+     * get all comments posted by this user
+     *
+     * @return Collection
      */
     public function getComments(): Collection
     {
@@ -147,6 +205,12 @@ class User
         return $this;
     }
 
+    /**
+     * remove a comment posted by this user
+     *
+     * @param Comment $comment
+     * @return self
+     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {

@@ -14,7 +14,7 @@ class PostController extends AbstractController
     /**
      * return the post's page
      * @Route("/post/{id}", name="post")
-     * @param [type] $id
+     * @param integer $id
      * @param PostRepository $postRepository
      * @return Response
      */
