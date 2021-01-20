@@ -18,10 +18,16 @@ class PostController extends AbstractController
      * @param PostRepository $postRepository
      * @return Response
      */
-    public function index(Post $post, $slug, $subreddit, PostRepository $postRepository): Response
+    public function index($id, $slug, $subreddit, PostRepository $postRepository): Response
     {
+        $post = $postRepository->find($id);
+        if($post == null){
+            return $this->redirectToRoute('home');
+        }
+
         $postSubreddit = $post->getSubreddit()->getTitle();
         $postSlug = $post->getSlug();
+
 
         if($slug != $postSlug || $subreddit != $postSubreddit){
             return $this->redirectToRoute('post.show', [
