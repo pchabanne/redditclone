@@ -23,15 +23,13 @@
             <div class="card-text">{{comment.content}}</div>
         </div>
     </div>
-    {% for subcomment in comment.comments %}
-        <div class="card comment mb-0 mt-0 ml-5">
-        <div class="card-body p-0">
-            <h6>Posted by <a class='userBtn' href='{{path('user.show', {'username' : subcomment.user.username})}}'>{{subcomment.user.username}}</a>
-                {{subcomment.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
-            <div class="card-text">{{subcomment.content}}</div>
+
+        {% if comment.comments != null %}
+        {% set subcomments = comment.comments %}
+        <div class="container">
+            {% include 'post/subcomment.html.twig' %}
         </div>
-    </div>
-    {% endfor %}
+        {% endif %}
     {% endif %}
     {% endfor %}
 </div>

@@ -69,13 +69,12 @@ class AppFixtures extends Fixture
 
         for($i = 0;$i<150;$i++){
             $comment = new Comment();
-            $user = $users->get(array_rand($users->toArray()));
-            $post = $posts->get(array_rand($posts->toArray()));
             $randComment = $comments->get(array_rand($comments->toArray()));
+            $user = $randComment->getUser();
+            $post = $randComment->getPost();
             $comment->setContent($faker->sentence(12))->setPost($post)->setUser($user);
             $comment->setCommentParent($randComment);
             
-
             $manager->persist($comment);
         }
 
