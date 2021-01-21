@@ -11,9 +11,18 @@ use Faker\Factory;
 use App\Entity\User;
 use ArrayObject;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+
+
+    private $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
 
     /**
      * load data in the database
@@ -41,7 +50,7 @@ class AppFixtures extends Fixture
             $user = new User();
                 $user->setEmail($faker->email)
                 ->setUsername($faker->word(1))
-                ->setPassword($faker->password(6, 8));
+                ->setPassword($this->encoder->encodePassword($user, $faker->password(6, 8)));
             $users->add($user);
             $manager->persist($user);
         }
@@ -78,6 +87,11 @@ class AppFixtures extends Fixture
             $manager->persist($comment);
         }
 
+        $user = new User();
+                $user->setEmail("admin@example.com")
+                ->setUsername("admin")
+                ->setPassword($this->encoder->encodePassword($user, "admin"));
+        $manager->persist($user);
 
         $manager->flush();
     }
