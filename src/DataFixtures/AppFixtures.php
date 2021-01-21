@@ -49,7 +49,7 @@ class AppFixtures extends Fixture
         for ($i = 0;$i<10;$i++){
             $user = new User();
                 $user->setEmail($faker->email)
-                ->setUsername($faker->word(1))
+                ->setUsername($faker->userName)
                 ->setPassword($this->encoder->encodePassword($user, $faker->password(6, 8)));
             $users->add($user);
             $manager->persist($user);
@@ -90,7 +90,8 @@ class AppFixtures extends Fixture
         $user = new User();
                 $user->setEmail("admin@example.com")
                 ->setUsername("admin")
-                ->setPassword($this->encoder->encodePassword($user, "admin"));
+                ->setPassword($this->encoder->encodePassword($user, "admin"))
+                ->addRole('ROLE_ADMIN');
         $manager->persist($user);
 
         $manager->flush();

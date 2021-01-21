@@ -1,7 +1,12 @@
 <nav class="navbar bg-light mb-4 justify-content-between">
     <a class="navbar-brand" href="{{path('home')}}">Redditclone</a>
     <div>
+    {% if app.user == null %}
       <a class="navbar-brand" href="{{path('login')}}">Login</a>
       <a class="navbar-brand" href="{{path('login')}}">Sign up</a>
+    {% else %}
+      <a>Hi {{app.user.username}} </a>
+      <a class="navbar-brand" href="{{path('logout')}}">Log out</a>
+    {% endif %}
     </div>
 </nav>

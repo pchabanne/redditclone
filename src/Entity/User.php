@@ -25,7 +25,7 @@ class User implements UserInterface, \Serializable
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=12, unique=true)
+     * @ORM\Column(type="string", length=20, unique=true)
      * @Assert\Regex("^[A-Za-z0-9_-]*$")
      * @Assert\Unique
      */
@@ -264,6 +264,13 @@ class User implements UserInterface, \Serializable
     public function setRoles(?array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function addRole($role): self
+    {
+        array_push($this->roles, $role);
 
         return $this;
     }
