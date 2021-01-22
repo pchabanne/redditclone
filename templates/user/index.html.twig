@@ -16,7 +16,7 @@
 
 <div class="card col-md-10 mb-0">
     <div class="card-body">
-            <h6><a class='userBtn' href='{{path('user.show', {'username' : comment.user.username})}}'>{{comment.user.username}}</a> commented on <a>{{comment.post.title}}</a></h6>
+            <h6 class="text-secondary"><a class='userBtn' href='{{path('user.show', {'username' : comment.user.username})}}'>{{comment.user.username}}</a> commented on <a>{{comment.post.title}}</a></h6>
             <p><a href='{{path('post.show', {'slug': comment.post.slug,'id': comment.post.id, 'subreddit': comment.post.subreddit.title})}}'class='btn stretched-link'>{{comment.post.title}}</a></p>
         <div class="card-text">{{comment.content | slice(0, 100)}}...</div>
     </div>

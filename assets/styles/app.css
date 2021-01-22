@@ -21,3 +21,6 @@
     .comment{
         border: none;
     }
+    .post-title{
+        font-weight: bold;
+    }

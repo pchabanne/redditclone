@@ -1,7 +1,7 @@
 {% for subcomment in subcomments %}
         <div class="card comment mb-0 mt-0 ml-5">
         <div class="card-body p-0">
-            <h6>Posted by <a class='userBtn' href='{{path('user.show', {'username' : subcomment.user.username})}}'>{{subcomment.user.username}}</a>
+            <h6 class="text-secondary">Posted by <a class='userBtn' href='{{path('user.show', {'username' : subcomment.user.username})}}'>u/{{subcomment.user.username}}</a>
                 {{subcomment.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
             <div class="card-text">{{subcomment.content}}</div>
         </div>
