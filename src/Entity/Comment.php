@@ -166,22 +166,44 @@ class Comment
     }
 
 
+    /**
+     * get the comment which is the parent of this comment
+     *
+     * @return Comment|null
+     */
     public function getCommentParent() :?Comment
     {
         return $this->commentParent;
     }
 
+    /**
+     * set a parent to this comment
+     *
+     * @param Comment $commentParent
+     * @return Comment|null
+     */
     public function setCommentParent(Comment $commentParent) :?Comment
     {
         $this->commentParent = $commentParent;
         return $this;
     }
 
+    /**
+     * get all subcomments under this comment
+     *
+     * @return Collection
+     */
     public function getComments() :Collection
     {
         return $this->comments;
     }
 
+    /**
+     * add a subcomment to this comment
+     *
+     * @param Comment $comment
+     * @return self
+     */
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
@@ -192,6 +214,12 @@ class Comment
         return $this;
     }
 
+    /**
+     * remove a subcomment from this comment
+     *
+     * @param Comment $comment
+     * @return self
+     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {

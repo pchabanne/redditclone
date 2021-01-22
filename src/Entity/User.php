@@ -65,7 +65,7 @@ class User implements UserInterface, \Serializable
     {
         $this->post = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->roles =['ROLE_USER'];
+        $this->roles = ['ROLE_USER'];
     }
 
     /**
@@ -202,6 +202,12 @@ class User implements UserInterface, \Serializable
         return $this->comments;
     }
 
+    /**
+     * add comment posted by this user
+     *
+     * @param Comment $comment
+     * @return self
+     */
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
@@ -230,19 +236,63 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getRoles()
+    /**
+     * get roles of the user
+     *
+     * @return array
+     */
+    public function getRoles() :array
     {
-        return $this->roles;
+        return array_unique($this->roles);
     }
 
+    /**
+     * set roles of the suer
+     *
+     * @param array|null $roles
+     * @return self
+     */
+    public function setRoles(?array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * add a role to the user
+     *
+     * @param string $role
+     * @return self
+     */
+    public function addRole(string $role): self
+    {
+        array_push($this->roles, $role);
+
+        return $this;
+    }
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     * It isn't used here, should be implemented becaus of the UserInterface
+     *
+     * @return void
+     */
     public function getSalt(){
         return null;
     }
 
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
     public function eraseCredentials()
     {
     }
 
+    
     public function serialize()
     {
         return serialize([
@@ -252,6 +302,7 @@ class User implements UserInterface, \Serializable
         ]);
     }
 
+    
     public function unserialize($serialized)
     {
         list(
@@ -259,19 +310,5 @@ class User implements UserInterface, \Serializable
             $this->username,
             $this->password,
         ) = unserialize($serialized, ['allow_classes'=> false]);
-    }
-
-    public function setRoles(?array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    public function addRole($role): self
-    {
-        array_push($this->roles, $role);
-
-        return $this;
     }
 }
