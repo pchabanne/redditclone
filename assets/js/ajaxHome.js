@@ -1,0 +1,68 @@
+function formatDate(date){
+    var newdate = '';
+    if(date.getDate()<10){
+        newdate = newdate+'0'+date.getDate()+'/';
+    }else{
+        newdate = newdate+date.getDate()+'/';
+    }
+    if(date.getMonth()<10){
+        newdate = newdate+'0'+date.getMonth()+'/';
+    }else{
+        newdate = newdate+date.getMonth()+'/';
+    }
+    newdate = newdate+date.getFullYear()+' ';
+    if(date.getHours()<10){
+        newdate = newdate+'0'+date.getHours()+':';
+    }else{
+        newdate = newdate+date.getHours()+':';
+    }
+    if(date.getMinutes()<10){
+        newdate = newdate+'0'+date.getMinutes();
+    }else{
+        newdate = newdate+date.getMinutes();
+    }
+
+    return newdate;
+}
+
+$(document).ready(function () {
+    var should = true;
+
+    $(window).scroll(function () {
+
+        var position = $(window).scrollTop();
+        var bottom = $(document).height() - $(window).height();
+        var response = [];
+        if (Math.ceil(position)+400 >= bottom && should==true) {
+            should=false;
+            var row = $('.card').length;
+            $.ajax({
+                url: '/get/posts',
+                type: 'get',
+                data: {
+                    first: row,
+                    limit: 3
+                },
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        var date = new Date(value['date']);
+                        var newdate = formatDate(date);
+                        var div = $('.card').first().clone();
+                        div.find('.subreddit-title').html(value['subreddit']);
+                        div.find('.subreddit-title').attr('href', '/r/' + value['subreddit']);
+                        div.find('.username').html(value['user']);
+                        div.find('.username').attr('href', '/user/' + value['user']);
+                        div.find('.post-title').html(value['title']);
+                        div.find('.post-title').attr('href', '/r/' + value['subreddit']+'/'+value['slug']);
+                        div.find('.post-content').html(value['content']+'...');
+                        div.find('.date').html(newdate);
+                        $('.container').append(div);
+                    })
+                    should=true;
+                }
+            });
+        }
+
+    });
+
+});

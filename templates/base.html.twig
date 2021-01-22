@@ -7,14 +7,19 @@
         {{ encore_entry_link_tags('app') }}
         {% block stylesheets %}{% endblock %}
 
-        {% block javascripts %}{% endblock %}
-    </head>
     <body>
         {% include 'navbar.html.twig' %}
         
         <div class="container"> 
         {% block body %}{% endblock %}
         </div>
-        {{ encore_entry_script_tags('app') }}
+         
+        {% block javascripts %}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+
+        {% include 'footer.html.twig' %}
+
     </body>
 </html>

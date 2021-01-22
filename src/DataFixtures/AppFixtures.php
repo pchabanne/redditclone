@@ -37,7 +37,7 @@ class AppFixtures extends Fixture
         $faker = Factory::create('fr_FR');
 
         $subreddits = new ArrayCollection();
-        for($i=0;$i<3;$i++){
+        for($i=0;$i<10;$i++){
             $subreddit = new Subreddit();
             $subreddit->setTitle($faker->word());
             $subreddits->add($subreddit);
@@ -46,7 +46,7 @@ class AppFixtures extends Fixture
 
 
         $users = new ArrayCollection();
-        for ($i = 0;$i<10;$i++){
+        for ($i = 0;$i<30;$i++){
             $user = new User();
                 $user->setEmail($faker->email)
                 ->setUsername($faker->userName)
@@ -56,19 +56,19 @@ class AppFixtures extends Fixture
         }
 
         $posts = new ArrayCollection();
-        for ($i = 0;$i<20;$i++){
+        for ($i = 0;$i<100;$i++){
             $post = new Post();
                 $post->setTitle($faker->sentence(6))
                 ->setContent($faker->paragraph(3))
                 ->setUser(($users->get(array_rand($users->toArray()))))
                 ->setSubreddit($subreddits->get(array_rand($subreddits->toArray())))
-                ->setCreatedAt($faker->dateTimeBetween('-1 years', 'now'));
+                ->setCreatedAt($faker->dateTimeThisCentury($max = 'now', $timezone = null));
             $posts->add($post);
             $manager->persist($post);
         }
 
         $comments = new ArrayCollection();
-        for($i = 0;$i<150;$i++){
+        for($i = 0;$i<400;$i++){
             $comment = new Comment();
             $comment->setContent($faker->sentence(12))->setPost($posts->get(array_rand($posts->toArray())))->setUser($users->get(array_rand($users->toArray())));
             $comments->add($comment);
@@ -76,7 +76,7 @@ class AppFixtures extends Fixture
         }
 
 
-        for($i = 0;$i<150;$i++){
+        for($i = 0;$i<200;$i++){
             $comment = new Comment();
             $randComment = $comments->get(array_rand($comments->toArray()));
             $user = $randComment->getUser();

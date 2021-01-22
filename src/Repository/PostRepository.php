@@ -49,6 +49,17 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findAllOrderByDateAjax($first, $limit)
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.created_at', 'DESC')
+            ->getQuery()
+            ->setFirstResult($first)
+            ->setMaxResults($limit)
+            ->getResult()
+        ;
+    }
+
     /**
      * return all posts of an user
      *
