@@ -26,8 +26,7 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=20, unique=true)
-     * @Assert\Regex("^[A-Za-z0-9_-]*$")
-     * @Assert\Unique
+     * @Assert\Regex(pattern="/^[A-Za-z0-9_-]*$/", message="Letters, numbers, dashes, and underscores only. Please try again")
      */
     private $username;
 
@@ -39,7 +38,6 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Email
-     * @Assert\Unique
      */
     private $email;
 
@@ -57,6 +55,11 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="json", nullable=true)
      */
     private $roles = [];
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isVerified = true;
 
     /**
      * user constructor
@@ -310,5 +313,17 @@ class User implements UserInterface, \Serializable
             $this->username,
             $this->password,
         ) = unserialize($serialized, ['allow_classes'=> false]);
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }
