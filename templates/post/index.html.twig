@@ -8,9 +8,16 @@
         <div class="card-body">
             <h6 class="text-secondary"><a class="userBtn" href='{{path('subreddit', {'title': post.subreddit.title})}}'>r/{{post.subreddit.title}}</a> Posted by <a class='userBtn'
                     href='{{path('user.show', {'username' : post.user.username})}}'>u/{{post.user.username}}</a>
-                {{post.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
+                {{post.createdAt|date("d/m/Y H:i", "Europe/Paris")}}</h6>
             <h1>{{post.title}}</h1>
-            <div class="card-text">{{post.content}}</div>
+            <div class="card-text">{{post.content|nl2br}}</div>
+            <div class="comment-bottom-line"><a {% if app.user == null %} href='{{path('login')}}'{% else %}data-toggle="collapse" data-target="#{{post.id}}"{% endif %}>reply</a></div>
+            
+            <form class="collapse" id="{{post.id}}" method="post" action="{{path('comment.add')}}">
+                <textarea name="comment"></textarea>
+                <input type="hidden" name="postId" value="{{post.id}}">
+                <button class="btn btn-primary" value="submit">Reply</button>
+            </form>
         </div>
     </div>
 
@@ -19,8 +26,15 @@
         <div class="card comment mb-0 mt-0">
         <div class="card-body">
             <h6 class="text-secondary">Posted by <a class='userBtn' href='{{path('user.show', {'username' : comment.user.username})}}'>u/{{comment.user.username}}</a>
-                {{comment.createdAt|date("d/m/Y H:m", "Europe/Paris")}}</h6>
-            <div class="card-text">{{comment.content}}</div>
+                {{comment.createdAt|date("d/m/Y H:i", "Europe/Paris")}}</h6>
+            <div class="card-text">{{comment.content|nl2br}}</div>
+            <div class="comment-bottom-line"><a {% if app.user == null %} href='{{path('login')}}'{% else %}data-toggle="collapse" data-target="#{{comment.id}}"{% endif %}>reply</a></div>
+            
+            <form class="collapse" id="{{comment.id}}" method="post" action="{{path('comment.add')}}">
+                <textarea name="comment"></textarea>
+                <input type="hidden" name="commentId" value="{{comment.id}}">
+                <button class="btn btn-primary" value="submit">Reply</button>
+            </form>
         </div>
     </div>
 

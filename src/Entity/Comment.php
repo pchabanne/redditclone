@@ -44,7 +44,7 @@ class Comment
 
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="commentParent", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="commentParent", orphanRemoval=true, cascade={"persist"})
      */
     private $comments;
 

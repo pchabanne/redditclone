@@ -59,6 +59,16 @@
         color: #63788a;
         font-size: 12px;
     }
+
+    .comment-bottom-line >a:hover{
+        background-color: #cfe4f7;
+        text-decoration: none;
+    }
+    .comment-bottom-line > a{
+        color: #63788a;
+        font-size: 12px;
+        font-weight: bold;
+    }
     .expand{
         position: relative;
         z-index: 2;
