@@ -17,6 +17,10 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            provider: from_database
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
             anonymous: true
             lazy: true
             form_login:

@@ -50,12 +50,10 @@ class PostController extends AbstractController
      * @Route("/addcomment", name="comment.add")
      *
      * @param Request $request
-     * @param CommentRepository $commentRepository
-     * @param PostRepository $postRepository
      * @param AddComment $addComment
      * @return Response
      */
-    public function addComment(Request $request, CommentRepository $commentRepository, PostRepository $postRepository, AddComment $addComment): Response{
+    public function addComment(Request $request, AddComment $addComment): Response{
         $content = $request->request->get('comment');
         $response = $addComment->checkParameters($content);
         if($response!=null){

@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 
+/**
+ * Service used when an user add a comment on a post or on a comment
+ */
 class AddComment{
 
     private $em;
@@ -30,7 +33,13 @@ class AddComment{
         $this->postRepository = $postRepository;
     }
 
-    public function checkParameters($content){
+    /**
+     * check if the user and if the content of the comment is not null
+     *
+     * @param null $content
+     * @return string|null
+     */
+    public function checkParameters($content) :string{
         if($this->security->getUser() == null){
             return $this->router->generate('home');
         }
@@ -41,7 +50,13 @@ class AddComment{
         return null;
     }
 
-    public function addComment($content){
+    /**
+     * return the post object where the comment is and redirect to the addCommentToComment function or too the AddCommentToPost function
+     *
+     * @param string $content
+     * @return Post
+     */
+    public function addComment($content) :Post{
         $request = $this->requestStack->getCurrentRequest();
         if($request->request->get('commentId') != null){
             $comment = $this->commentRepository->find($request->request->get("commentId"));
@@ -55,6 +70,13 @@ class AddComment{
         }
     }
     
+    /**
+     * add the comment to a post (the comment did not have a parent)
+     *
+     * @param Post $post
+     * @param string $content
+     * @return void
+     */
     public function addCommentToPost(Post $post, $content){
         $newComment = new Comment();
         $newComment->setContent($content)
@@ -65,6 +87,13 @@ class AddComment{
         $this->em->flush();
     }
 
+    /**
+     * add the comment to a post (the comment have a parent)
+     *
+     * @param Comment $comment
+     * @param string $content
+     * @return void
+     */
     public function addCommentToComment(Comment $comment, $content){
         $post = $comment->getPost();
         $newComment = new Comment();
