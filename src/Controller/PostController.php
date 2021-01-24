@@ -6,7 +6,7 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\AddComment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,11 +46,16 @@ class PostController extends AbstractController
     }
 
     /**
+     * add a comment on a post or on a comment
      * @Route("/addcomment", name="comment.add")
      *
-     * @return void
+     * @param Request $request
+     * @param CommentRepository $commentRepository
+     * @param PostRepository $postRepository
+     * @param AddComment $addComment
+     * @return Response
      */
-    public function addComment(Request $request, CommentRepository $commentRepository, PostRepository $postRepository, EntityManagerInterface $em){
+    public function addComment(Request $request, CommentRepository $commentRepository, PostRepository $postRepository, AddComment $addComment): Response{
         if($this->getUser() == null){
             return $this->redirectToRoute('home');
         }
@@ -58,31 +63,18 @@ class PostController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        if($request->request->get('commentId')!= null){
+        if($request->request->get('commentId') != null){
             $comment = $commentRepository->find($request->request->get("commentId"));
             $post = $comment->getPost();
-        }elseif($request->request->get('postId')!= null){
+            $addComment->addCommentToComment($comment, $request->request->get('comment'));
+        }elseif($request->request->get('postId') != null){
             $post = $postRepository->find($request->request->get('postId'));
+            $addComment->addCommentToPost($post, $request->request->get('comment'));
         }
+
         $id = $post->getId();
         $slug = $post->getSlug();
         $subreddit = $post->getSubreddit()->getTitle();
-    
-        $newComment = new Comment();
-        $newComment->setContent($request->request->get("comment"))
-            ->setUser($this->getUser())
-            ->setPost($post);
-
-        if($request->request->get('commentId')!= null){
-            $newComment->setCommentParent($comment);
-            $comment->addComment($newComment);
-             $em->persist($comment);
-            $em->flush();
-        }elseif($request->request->get('postId')!= null){
-            $post->addComment($newComment);
-            $em->persist($post);
-            $em->flush();
-        }
 
         return $this->redirectToRoute('post.show', [
             'id' => $id,
