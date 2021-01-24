@@ -56,21 +56,14 @@ class PostController extends AbstractController
      * @return Response
      */
     public function addComment(Request $request, CommentRepository $commentRepository, PostRepository $postRepository, AddComment $addComment): Response{
-        if($this->getUser() == null){
-            return $this->redirectToRoute('home');
-        }
-        if($request->request->get('comment') == ""){
-            return $this->redirectToRoute('home');
+        $content = $request->request->get('comment');
+        $response = $addComment->checkParameters($content);
+        if($response!=null){
+            return $this->redirect($response);
         }
 
-        if($request->request->get('commentId') != null){
-            $comment = $commentRepository->find($request->request->get("commentId"));
-            $post = $comment->getPost();
-            $addComment->addCommentToComment($comment, $request->request->get('comment'));
-        }elseif($request->request->get('postId') != null){
-            $post = $postRepository->find($request->request->get('postId'));
-            $addComment->addCommentToPost($post, $request->request->get('comment'));
-        }
+        $post = $addComment->addComment($content);
+        
 
         $id = $post->getId();
         $slug = $post->getSlug();
