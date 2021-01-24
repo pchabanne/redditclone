@@ -41,7 +41,7 @@ $(document).ready(function () {
                 type: 'get',
                 data: {
                     first: row,
-                    limit: 3
+                    limit: 5
                 },
                 success: function (response) {
                     $.each(response, function (key, value) {

@@ -38,7 +38,6 @@
         font-weight: bold;
     }
     .miniature{
-        display: inline-block;
         float:left;
         margin-right: 3px;
         max-width: 80px;
