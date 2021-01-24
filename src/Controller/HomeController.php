@@ -54,6 +54,8 @@ class HomeController extends AbstractController
             $slug = $post->getSlug();
             $slug = $slug.'-'.$post->getId();
             $postJson['slug'] = $slug;
+            $postJson['id'] = $post->getId();
+
 
 
             array_push($postsJson, $postJson);

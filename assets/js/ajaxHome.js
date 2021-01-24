@@ -56,6 +56,8 @@ $(document).ready(function () {
                         div.find('.post-title').attr('href', '/r/' + value['subreddit']+'/'+value['slug']);
                         div.find('.post-content').html(value['content']+'...');
                         div.find('.date').html(newdate);
+                        div.find('.collapse').attr('id', value['id']);
+                        div.find('.btn-collapse').attr('data-target', '#'+value['id']);
                         $('.container').append(div);
                     })
                     should=true;
