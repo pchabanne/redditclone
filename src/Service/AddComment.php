@@ -39,7 +39,7 @@ class AddComment{
      * @param null $content
      * @return string|null
      */
-    public function checkParameters($content) :string{
+    public function checkParameters($content) :?string{
         if($this->security->getUser() == null){
             return $this->router->generate('home');
         }
