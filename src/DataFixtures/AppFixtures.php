@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\PostLike;
 use App\Entity\Subreddit;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -65,6 +66,13 @@ class AppFixtures extends Fixture
                 ->setCreatedAt($faker->dateTimeThisCentury($max = 'now', $timezone = null));
             $posts->add($post);
             $manager->persist($post);
+
+            for($j=0;$j<mt_rand(0,30);$j++){
+                $like = new PostLike();
+                $randUser = $users->get(array_rand($users->toArray()));
+                $like->setPost($post)->setUser($randUser)->setValue($faker->boolean(70));
+                $manager->persist($like);
+            }
         }
 
         $comments = new ArrayCollection();
