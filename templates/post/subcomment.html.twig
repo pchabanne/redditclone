@@ -6,10 +6,10 @@
             <div class="card-text">{{subcomment.content|nl2br}}</div>
             <div class="comment-bottom-line"><a {% if app.user == null %} href='{{path('login')}}'{% else %}data-toggle="collapse" data-target="#{{subcomment.id}}"{% endif %}>reply</a></div>
             
-            <form class="collapse" id="{{subcomment.id}}" method="post" action="{{path('comment.add')}}">
-                <textarea name="comment"></textarea>
+            <form class="form-group collapse" id="{{subcomment.id}}" method="post" action="{{path('comment.add')}}">
+                <textarea class="form-control" name="comment"></textarea>
                 <input type="hidden" name="commentId" value="{{subcomment.id}}">
-                <button class="btn btn-primary" value="submit">Reply</button>
+                <button class="btn btn-primary form-control" value="submit">Reply</button>
             </form>
         </div>
     </div>

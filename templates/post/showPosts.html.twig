@@ -16,7 +16,7 @@
                 <span class="bottom-line"><a class="btn-collapse" data-toggle="collapse" data-target="#{{post.id}}"><i class="fas fa-expand-alt expand"></i></a> <a><i class="fas fa-comment"></i> {{post.comments|length}} comments</a></span>
             </div>
         </div>
-        <div class="collapse card-text post-content" id="{{post.id}}">{{post.content}}</div>
+        <div class="collapse card-text post-content" id="{{post.id}}">{{post.content|nl2br}}</div>
     </div>
 </div>
 {% endfor %}
