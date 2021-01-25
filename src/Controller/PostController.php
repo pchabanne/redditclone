@@ -9,6 +9,7 @@ use App\Repository\PostLikeRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\AddComment;
+use App\Service\LikeManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,13 +22,15 @@ class PostController extends AbstractController
     private $em;
     private $postRepository;
     private $postLikeRepository;
+    private $likeManager;
 
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $em, PostRepository $postRepository, PostLikeRepository $postLikeRepository)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em, PostRepository $postRepository, PostLikeRepository $postLikeRepository, LikeManager $likeManager)
     {
         $this->em = $em;
         $this->postRepository = $postRepository;
         $this->requestStack = $requestStack;
         $this->postLikeRepository = $postLikeRepository;
+        $this->likeManager = $likeManager;
     }
     /**
      * return the post's page
@@ -76,10 +79,7 @@ class PostController extends AbstractController
         if($response!=null){
             return $this->redirect($response);
         }
-
         $post = $addComment->addComment($content);
-        
-
         $id = $post->getId();
         $slug = $post->getSlug();
         $subreddit = $post->getSubreddit()->getTitle();
@@ -102,52 +102,12 @@ class PostController extends AbstractController
         if (!$user) {
             return $this->json(['message'=>'Unauthorized'], 403);
         }
-        $request = $this->requestStack->getCurrentRequest();
-        $content = $request->getContent();
-        $requestdata = json_decode($content,true);
-        $token = $requestdata["token"];
+        $contentOfRequest = json_decode($this->requestStack->getCurrentRequest()->getContent(), true);
+        $token = $contentOfRequest["token"];
         $isTokenValid = $this->isCsrfTokenValid($user->getId(), $token);
         if($isTokenValid){
-            if($post->isLikedByUser($this->getUser())){
-                $like = $this->postLikeRepository->findOneBy([
-                    'post'=>$post,
-                    'user'=>$user,
-                    ]);
-                $this->em->remove($like);
-                $this->em->flush();
-
-                return $this->json([
-                    'message'=>'like deleted',
-                    'count'=>$post->getCountLikes(),
-                ], 200);
-            }
-
-            if($post->isDislikedByUser($this->getUser())){
-                $like = $this->postLikeRepository->findOneBy([
-                    'post'=>$post,
-                    'user'=>$user,
-                    ]);
-                $like->setValue(true);
-                $this->em->persist($like);
-                $this->em->flush();
-
-                return $this->json([
-                    'message'=>'dislike deleted like added',
-                    'count'=>$post->getCountLikes(),
-                ], 200);
-            }
-
-            $like = new PostLike();
-            $like->setUser($user)->setValue(true);
-            $post->addLike($like);
-            $this->em->persist($post);
-            $this->em->flush();
-
-
-            return $this->json([
-                'message'=>'like added',
-                'count'=>$post->getCountLikes(),
-            ], 200);
+            $response = $this->likeManager->handleLike($post);
+            return $this->json($response, 200);
         }
         return $this->json(['message'=>'token invalid'], 403);
     }
@@ -164,52 +124,12 @@ class PostController extends AbstractController
         if (!$user) {
             return $this->json(['message'=>'Unauthorized'], 403);
         }
-        $request = $this->requestStack->getCurrentRequest();
-        $content = $request->getContent();
-        $requestdata = json_decode($content,true);
-        $token = $requestdata["token"];
+        $contentOfRequest = json_decode($this->requestStack->getCurrentRequest()->getContent(), true);
+        $token = $contentOfRequest["token"];
         $isTokenValid = $this->isCsrfTokenValid($user->getId(), $token);
         if($isTokenValid){
-            if($post->isLikedByUser($this->getUser())){
-                $like = $this->postLikeRepository->findOneBy([
-                    'post'=>$post,
-                    'user'=>$user,
-                    ]);
-                $like->setValue(false);
-                $this->em->persist($like);
-                $this->em->flush();
-
-                return $this->json([
-                    'message'=>'like deleted dislike added',
-                    'count'=>$post->getCountLikes(),
-                ], 200);
-            }
-
-            if($post->isDislikedByUser($this->getUser())){
-                $like = $this->postLikeRepository->findOneBy([
-                    'post'=>$post,
-                    'user'=>$user,
-                    ]);
-                $this->em->remove($like);
-                $this->em->flush();
-
-                return $this->json([
-                    'message'=>'dislike deleted',
-                    'count'=>$post->getCountLikes(),
-                ], 200);
-            }
-
-            $like = new PostLike();
-            $like->setUser($user)->setValue(false);
-            $post->addLike($like);
-            $this->em->persist($post);
-            $this->em->flush();
-
-
-            return $this->json([
-                'message'=>'dislike added',
-                'count'=>$post->getCountLikes(),
-            ], 200);
+            $response = $this->likeManager->handleDislike($post);
+            return $this->json($response, 200);
         }
         return $this->json(['message'=>'token invalid'], 403);
     }
