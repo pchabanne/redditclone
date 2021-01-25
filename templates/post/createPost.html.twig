@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}Create a new post{% endblock %}
+
+
+{% block body %}
+{{ form_start(form) }}
+    <div class="form-group">
+        {{ form_row(form.subreddit, {'type': 'password', 'label': 'Subreddit', 'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.title, {'label': 'Title', 'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.content, {'label': 'Content', 'attr': {'class': 'form-control'}}) }}
+    </div>
+    <button type="submit" class="btn btn-primary rounded mb-2 p-1">Create post</button>
+{{ form_end(form) }}
+
+{% endblock %}
