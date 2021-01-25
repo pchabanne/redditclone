@@ -62,6 +62,11 @@ class User implements UserInterface, \Serializable
     private $isVerified = true;
 
     /**
+     * @ORM\OneToMany(targetEntity=PostLike::class, mappedBy="user")
+     */
+    private $likes;
+
+    /**
      * user constructor
      */
     public function __construct()
@@ -69,6 +74,7 @@ class User implements UserInterface, \Serializable
         $this->post = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->roles = ['ROLE_USER'];
+        $this->likes = new ArrayCollection();
     }
 
     /**
@@ -323,6 +329,36 @@ class User implements UserInterface, \Serializable
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostLike[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(PostLike $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(PostLike $like): self
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getUser() === $this) {
+                $like->setUser(null);
+            }
+        }
 
         return $this;
     }

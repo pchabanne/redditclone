@@ -1,3 +1,5 @@
+let like = require("./like")
+
 function formatDate(date){
     var newdate = '';
     if(date.getDate()<10){
@@ -58,8 +60,21 @@ $(document).ready(function () {
                         div.find('.date').html(newdate);
                         div.find('.collapse').attr('id', value['id']);
                         div.find('.btn-collapse').attr('data-target', '#'+value['id']);
+                        div.find('.count-likes').html(value['count']);
+                        div.find('.js-like-link').removeClass('is-liked');
+                        div.find('.js-dislike-link').removeClass('is-liked');
+                        div.find('.js-like-link').attr('href', '/post/'+value['id']+'/like')
+                        div.find('.js-dislike-link').attr('href', '/post/'+value['id']+'/dislike')
+                        if(value['isLiked']){
+                            div.find('.js-like-link').addClass('is-liked');
+                        }
+                        if(value['isDisliked']){
+                            div.find('.js-dislike-link').addClass('is-liked');
+                        }
+                        
                         $('.container').append(div);
                     })
+                    like.setLink();
                     should=true;
                 }
             });

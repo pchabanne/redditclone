@@ -3,6 +3,19 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
+            <div>
+            {% if app.user and post.isLikedByUser(app.user) %}
+                <a href="{{path('post.like', {'id': post.id})}}" class="js-like-link userBtn is-liked"><i class="fas fa-arrow-up"></i></a>
+                <a href="{{path('post.dislike', {'id': post.id})}}" class="js-dislike-link userBtn"><i class="fas fa-arrow-down"></i></a>
+            {% elseif app.user and post.isDislikedByUser(app.user) %}
+                <a href="{{path('post.like', {'id': post.id})}}" class="js-like-link userBtn"><i class="fas fa-arrow-up"></i></a>
+                <a href="{{path('post.dislike', {'id': post.id})}}" class="js-dislike-link userBtn is-liked"><i class="fas fa-arrow-down"></i></a>
+            {% else %}
+                <a href="{{path('post.like', {'id': post.id})}}" class="js-like-link userBtn"><i class="fas fa-arrow-up"></i></a>
+                <a href="{{path('post.dislike', {'id': post.id})}}" class="js-dislike-link userBtn"><i class="fas fa-arrow-down"></i></a>
+            {% endif %}
+            <span class="count-likes">{{post.getCountLikes}}</span>
+            </div>
                 <img src="https://via.placeholder.com/80x60" alt="" class="img-fluid miniature">
                 <p class="title"><a
                         href='{{path('post.show', {'slug': post.slug,'id': post.id, 'subreddit': post.subreddit.title})}}'

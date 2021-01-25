@@ -76,3 +76,13 @@
     .expand:hover{
         background-color: #cfe4f7;
     }
+    .js-like-link{
+        color:grey;
+    }
+    .js-dislike-link{
+        color:grey;
+    }
+    .is-liked{
+        color:red;
+    }
+    

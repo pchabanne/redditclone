@@ -55,6 +55,14 @@ class HomeController extends AbstractController
             $slug = $slug.'-'.$post->getId();
             $postJson['slug'] = $slug;
             $postJson['id'] = $post->getId();
+            $postJson['count'] = $post->getCountLikes();
+            if($this->getUser()){
+                $postJson['isLiked'] = $post->isLikedByUser($this->getUser());
+                $postJson['isDisliked'] = $post->isDislikedByUser($this->getUser());
+            }else{
+                $postJson['isLiked'] = false;
+                $postJson['isDisliked'] = false;
+            }
 
 
 

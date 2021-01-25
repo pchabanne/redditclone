@@ -13,6 +13,20 @@
             <div class="card-text">{{post.content|nl2br}}</div>
             <div class="comment-bottom-line"><a {% if app.user == null %} href='{{path('login')}}'{% else %}data-toggle="collapse" data-target="#{{post.id}}"{% endif %}>reply</a></div>
             
+            <div>
+            {% if app.user and post.isLikedByUser(app.user) %}
+                <a href="{{path('post.like', {'id': post.id})}}" class="js-like-link userBtn is-liked"><i class="fas fa-arrow-up"></i></a>
+                <a href="{{path('post.dislike', {'id': post.id})}}" class="js-dislike-link userBtn"><i class="fas fa-arrow-down"></i></a>
+            {% elseif app.user and post.isDislikedByUser(app.user) %}
+                <a href="{{path('post.like', {'id': post.id})}}" class="js-like-link userBtn"><i class="fas fa-arrow-up"></i></a>
+                <a href="{{path('post.dislike', {'id': post.id})}}" class="js-dislike-link userBtn is-liked"><i class="fas fa-arrow-down"></i></a>
+            {% else %}
+                <a href="{{path('post.like', {'id': post.id})}}" class="js-like-link userBtn"><i class="fas fa-arrow-up"></i></a>
+                <a href="{{path('post.dislike', {'id': post.id})}}" class="js-dislike-link userBtn"><i class="fas fa-arrow-down"></i></a>
+            {% endif %}
+            <span class="count-likes">{{post.getCountLikes}}</span>
+            </div>
+
             <form class="form-group collapse" id="{{post.id}}" method="post" action="{{path('comment.add')}}">
                 <textarea class="form-control" name="comment"></textarea>
                 <input type="hidden" name="postId" value="{{post.id}}">
@@ -50,4 +64,10 @@
 
 
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    {{ encore_entry_script_tags('like') }}
 {% endblock %}

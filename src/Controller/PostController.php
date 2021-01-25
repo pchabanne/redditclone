@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use App\Entity\Post;
-use App\Repository\CommentRepository;
+use App\Entity\PostLike;
+use App\Repository\PostLikeRepository;
 use App\Repository\PostRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Service\AddComment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,16 +15,24 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
+
+    private $em;
+    private $postRepository;
+
+    public function __construct(EntityManagerInterface $em, PostRepository $postRepository)
+    {
+        $this->em = $em;
+        $this->postRepository = $postRepository;
+    }
     /**
      * return the post's page
      * @Route("r/{subreddit}/{slug}-{id}", name="post.show", requirements={"slug": "[a-z0-9\-]*"})
      * @param integer $id
-     * @param PostRepository $postRepository
      * @return Response
      */
-    public function index($id, $slug, $subreddit, PostRepository $postRepository): Response
+    public function index($id, $slug, $subreddit): Response
     {
-        $post = $postRepository->find($id);
+        $post = $this->postRepository->find($id);
         if($post == null){
             return $this->redirectToRoute('home');
         }
@@ -73,4 +82,112 @@ class PostController extends AbstractController
             'subreddit' => $subreddit,
         ]);
     }
+
+    /**
+     * @Route("post/{id}/like", name="post.like")
+     *
+     * @param Post $post
+     * @return void
+     */
+    public function like(Post $post, PostLikeRepository $postLikeRepository){
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message'=>'Unauthorized'], 403);
+        }
+        if($post->isLikedByUser($this->getUser())){
+            $like = $postLikeRepository->findOneBy([
+                'post'=>$post,
+                'user'=>$user,
+                ]);
+            $this->em->remove($like);
+            $this->em->flush();
+
+            return $this->json([
+                'message'=>'like deleted',
+                'count'=>$post->getCountLikes(),
+            ], 200);
+        }
+
+        if($post->isDislikedByUser($this->getUser())){
+            $like = $postLikeRepository->findOneBy([
+                'post'=>$post,
+                'user'=>$user,
+                ]);
+            $like->setValue(true);
+            $this->em->persist($like);
+            $this->em->flush();
+
+            return $this->json([
+                'message'=>'dislike deleted like added',
+                'count'=>$post->getCountLikes(),
+            ], 200);
+        }
+
+        $like = new PostLike();
+        $like->setUser($user)->setValue(true);
+        $post->addLike($like);
+        $this->em->persist($post);
+        $this->em->flush();
+
+
+        return $this->json([
+            'message'=>'like added',
+            'count'=>$post->getCountLikes(),
+        ], 200);
+    }
+
+    /**
+     * @Route("post/{id}/dislike", name="post.dislike")
+     *
+     * @param Post $post
+     * @return void
+     */
+    public function dislike(Post $post, PostLikeRepository $postLikeRepository){
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message'=>'Unauthorized'], 403);
+        }
+        
+        if($post->isLikedByUser($this->getUser())){
+            $like = $postLikeRepository->findOneBy([
+                'post'=>$post,
+                'user'=>$user,
+                ]);
+            $like->setValue(false);
+            $this->em->persist($like);
+            $this->em->flush();
+
+            return $this->json([
+                'message'=>'like deleted dislike added',
+                'count'=>$post->getCountLikes(),
+            ], 200);
+        }
+
+        if($post->isDislikedByUser($this->getUser())){
+            $like = $postLikeRepository->findOneBy([
+                'post'=>$post,
+                'user'=>$user,
+                ]);
+            $this->em->remove($like);
+            $this->em->flush();
+
+            return $this->json([
+                'message'=>'dislike deleted',
+                'count'=>$post->getCountLikes(),
+            ], 200);
+        }
+
+        $like = new PostLike();
+        $like->setUser($user)->setValue(false);
+        $post->addLike($like);
+        $this->em->persist($post);
+        $this->em->flush();
+
+
+        return $this->json([
+            'message'=>'dislike added',
+            'count'=>$post->getCountLikes(),
+        ], 200);
+    }
+    
 }

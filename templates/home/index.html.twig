@@ -19,8 +19,11 @@
 
 {% block javascripts %}
      {{ parent() }}
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+     {{ encore_entry_script_tags('like') }}
      {{ encore_entry_script_tags('home') }}
      {{ encore_entry_script_tags('createPost') }}
+     
  {% endblock %}
 
 {% endblock %}

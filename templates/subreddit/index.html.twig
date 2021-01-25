@@ -17,6 +17,7 @@
 {% include 'post/showPosts.html.twig'%}
 {% block javascripts %}
      {{ parent() }}
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
      {{ encore_entry_script_tags('createPost') }}
  {% endblock %}
 {% endblock %}

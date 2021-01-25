@@ -58,12 +58,18 @@ class Post
     private $subreddit;
 
     /**
+     * @ORM\OneToMany(targetEntity=PostLike::class, mappedBy="post", cascade={"persist"})
+     */
+    private $likes;
+
+    /**
      * post constructor
      */
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->created_at = new \DateTime();
+        $this->likes = new ArrayCollection();
     }
 
     /**
@@ -243,5 +249,68 @@ class Post
         $this->subreddit = $subreddit;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|PostLike[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function getCountLikes(){
+        $count = 0;
+        $likes=$this->getLikes();
+        foreach($likes as $like){
+            if($like->getValue()==true){
+                $count = $count+1;
+            }
+            elseif($like->getValue()==false){
+                $count = $count-1;
+            }
+        }
+
+        return $count;
+    }
+
+    public function addLike(PostLike $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(PostLike $like): self
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getPost() === $this) {
+                $like->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isLikedByUser($user){
+        foreach($this->likes as $like){
+            if($like->getUser()==$user && $like->getValue()==true){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function isDislikedByUser($user){
+        foreach($this->likes as $like){
+            if($like->getUser()==$user && $like->getValue()==false){
+                return true;
+            }
+        }
+        return false;
     }
 }
