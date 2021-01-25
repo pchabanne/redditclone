@@ -11,9 +11,19 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\SubredditRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SubredditController extends AbstractController
 {
+    private $requestStack;
+    private $em;
+
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
+    {
+        $this->requestStack = $requestStack;
+        $this->em = $em;
+    }
+
     /**
      * return a subreddit's homepage
      * @Route("/r/{title}", name="subreddit")
@@ -21,14 +31,14 @@ class SubredditController extends AbstractController
      * @param string $title
      * @return Response
      */
-    public function index(EntityManagerInterface $em, $title): Response
+    public function index($title): Response
     {
-        $subreddit = $em->getRepository(Subreddit::class)->findOneByTitle($title);
+        $subreddit = $this->em->getRepository(Subreddit::class)->findOneByTitle($title);
         if($subreddit==null){
             return $this->redirectToRoute('home');
         }
 
-        $posts = $em->getRepository(Post::class)->findAllBySubreddit($subreddit);
+        $posts = $this->em->getRepository(Post::class)->findAllBySubreddit($subreddit);
         return $this->render('subreddit/index.html.twig', [
             'subreddit' => $subreddit,
             'posts' => $posts,
@@ -36,11 +46,13 @@ class SubredditController extends AbstractController
     }
 
     /**
+     * create a post from a subreddit
      * @Route("r/{title}/submit", name="createPostSub")
      *
-     * @return void
+     * @param Subreddit $subreddit
+     * @return Response
      */
-    public function createPostFromSubreddit(Request $request, EntityManagerInterface $em, SubredditRepository $subredditRepository, Subreddit $subreddit){
+    public function createPostFromSubreddit(Subreddit $subreddit) :Response{
         if (!$this->getUser()) {
             return $this->redirectToRoute('login');
         }
@@ -48,13 +60,14 @@ class SubredditController extends AbstractController
         $post = new Post();
         $post->setSubreddit($subreddit);
         $form = $this->createForm(PostType::class, $post);
+        $request = $this->requestStack->getCurrentRequest();
         $form->handleRequest($request);
         $data = $form->getData();
 
         if($form->isSubmitted() && $form->isValid()){
             $post->setUser($this->getUser());
-            $em->persist($post);
-            $em->flush($post);
+            $this->em->persist($post);
+            $this->em->flush($post);
             return $this->redirectToRoute('home');
         }
 
@@ -62,24 +75,24 @@ class SubredditController extends AbstractController
     }
 
     /**
+     * create a post
      * @Route("submit", name="createPost")
-     *
-     * @return void
+     * @return Response
      */
-    public function createPost(Request $request, EntityManagerInterface $em){
+    public function createPost() :Response{
         if (!$this->getUser()) {
             return $this->redirectToRoute('login');
         }
 
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
+        $request = $this->requestStack->getCurrentRequest();
         $form->handleRequest($request);
-        $data = $form->getData();
 
         if($form->isSubmitted() && $form->isValid()){
             $post->setUser($this->getUser());
-            $em->persist($post);
-            $em->flush($post);
+            $this->em->persist($post);
+            $this->em->flush($post);
             return $this->redirectToRoute('home');
         }
 

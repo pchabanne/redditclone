@@ -259,7 +259,12 @@ class Post
         return $this->likes;
     }
 
-    public function getCountLikes(){
+    /**
+     * return the number of like the post get (can be negative)
+     *
+     * @return integer
+     */
+    public function getCountLikes() :int{
         $count = 0;
         $likes=$this->getLikes();
         foreach($likes as $like){
@@ -274,6 +279,12 @@ class Post
         return $count;
     }
 
+    /**
+     * add a like to the post
+     *
+     * @param PostLike $like
+     * @return self
+     */
     public function addLike(PostLike $like): self
     {
         if (!$this->likes->contains($like)) {
@@ -284,6 +295,12 @@ class Post
         return $this;
     }
 
+    /**
+     * remove a like to the post
+     *
+     * @param PostLike $like
+     * @return self
+     */
     public function removeLike(PostLike $like): self
     {
         if ($this->likes->removeElement($like)) {
@@ -296,7 +313,13 @@ class Post
         return $this;
     }
 
-    public function isLikedByUser($user){
+    /**
+     * check if this post is liked by the user
+     *
+     * @param User $user
+     * @return boolean
+     */
+    public function isLikedByUser(User $user) :bool{
         foreach($this->likes as $like){
             if($like->getUser()==$user && $like->getValue()==true){
                 return true;
@@ -305,6 +328,12 @@ class Post
         return false;
     }
 
+    /**
+     * check if this post is disliked by a the user
+     *
+     * @param [type] $user
+     * @return boolean
+     */
     public function isDislikedByUser($user){
         foreach($this->likes as $like){
             if($like->getUser()==$user && $like->getValue()==false){

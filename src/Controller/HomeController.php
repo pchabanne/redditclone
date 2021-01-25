@@ -14,6 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+    private $postRepository;
+
+    public function __construct(PostRepository $postRepository)
+    {
+        $this->postRepository = $postRepository;
+    }
     /**
      * return the home page
      * @Route("/", name="home")
@@ -34,12 +40,12 @@ class HomeController extends AbstractController
      *
      * @param PostRepository $postRepository
      * @param Request $request
-     * @return void
+     * @return Response
      */
-    public function ajax(PostRepository $postRepository, Request $request){
+    public function ajax(Request $request) :Response{
         $first = $request->query->get('first');
         $limit = $request->query->get('limit');
-        $posts = $postRepository->findAllOrderByDateAjax($first, $limit);
+        $posts = $this->postRepository->findAllOrderByDateAjax($first, $limit);
         
         
         $postsJson = [];

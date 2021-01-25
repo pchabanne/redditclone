@@ -3,31 +3,39 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\PostLike;
 use App\Repository\PostLikeRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\AddComment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
 
+    private $requestStack;
     private $em;
     private $postRepository;
+    private $postLikeRepository;
 
-    public function __construct(EntityManagerInterface $em, PostRepository $postRepository)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em, PostRepository $postRepository, PostLikeRepository $postLikeRepository)
     {
         $this->em = $em;
         $this->postRepository = $postRepository;
+        $this->requestStack = $requestStack;
+        $this->postLikeRepository = $postLikeRepository;
     }
     /**
      * return the post's page
      * @Route("r/{subreddit}/{slug}-{id}", name="post.show", requirements={"slug": "[a-z0-9\-]*"})
-     * @param integer $id
+     *
+     * @param int $id
+     * @param string $slug
+     * @param int $subreddit
      * @return Response
      */
     public function index($id, $slug, $subreddit): Response
@@ -58,11 +66,11 @@ class PostController extends AbstractController
      * add a comment on a post or on a comment
      * @Route("/addcomment", name="comment.add")
      *
-     * @param Request $request
      * @param AddComment $addComment
      * @return Response
      */
-    public function addComment(Request $request, AddComment $addComment): Response{
+    public function addComment(AddComment $addComment): Response{
+        $request = $this->requestStack->getCurrentRequest();
         $content = $request->request->get('comment');
         $response = $addComment->checkParameters($content);
         if($response!=null){
@@ -84,23 +92,24 @@ class PostController extends AbstractController
     }
 
     /**
+     * like a post
      * @Route("post/{id}/like", name="post.like")
-     *
      * @param Post $post
-     * @return void
+     * @return Response
      */
-    public function like(Post $post, PostLikeRepository $postLikeRepository, Request $request){
+    public function like(Post $post) :Response{
         $user = $this->getUser();
         if (!$user) {
             return $this->json(['message'=>'Unauthorized'], 403);
         }
+        $request = $this->requestStack->getCurrentRequest();
         $content = $request->getContent();
         $requestdata = json_decode($content,true);
         $token = $requestdata["token"];
         $isTokenValid = $this->isCsrfTokenValid($user->getId(), $token);
         if($isTokenValid){
             if($post->isLikedByUser($this->getUser())){
-                $like = $postLikeRepository->findOneBy([
+                $like = $this->postLikeRepository->findOneBy([
                     'post'=>$post,
                     'user'=>$user,
                     ]);
@@ -114,7 +123,7 @@ class PostController extends AbstractController
             }
 
             if($post->isDislikedByUser($this->getUser())){
-                $like = $postLikeRepository->findOneBy([
+                $like = $this->postLikeRepository->findOneBy([
                     'post'=>$post,
                     'user'=>$user,
                     ]);
@@ -144,23 +153,25 @@ class PostController extends AbstractController
     }
 
     /**
+     * dislike a post
      * @Route("post/{id}/dislike", name="post.dislike")
-     *
+     * 
      * @param Post $post
-     * @return void
+     * @return Response
      */
-    public function dislike(Post $post, PostLikeRepository $postLikeRepository, Request $request){
+    public function dislike(Post $post) :Response{
         $user = $this->getUser();
         if (!$user) {
             return $this->json(['message'=>'Unauthorized'], 403);
         }
+        $request = $this->requestStack->getCurrentRequest();
         $content = $request->getContent();
         $requestdata = json_decode($content,true);
         $token = $requestdata["token"];
         $isTokenValid = $this->isCsrfTokenValid($user->getId(), $token);
         if($isTokenValid){
             if($post->isLikedByUser($this->getUser())){
-                $like = $postLikeRepository->findOneBy([
+                $like = $this->postLikeRepository->findOneBy([
                     'post'=>$post,
                     'user'=>$user,
                     ]);
@@ -175,7 +186,7 @@ class PostController extends AbstractController
             }
 
             if($post->isDislikedByUser($this->getUser())){
-                $like = $postLikeRepository->findOneBy([
+                $like = $this->postLikeRepository->findOneBy([
                     'post'=>$post,
                     'user'=>$user,
                     ]);
