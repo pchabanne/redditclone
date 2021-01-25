@@ -2,6 +2,12 @@
 
 {% block title %}r/{{subreddit.title}}{% endblock %}
 {% block body %}
+{% if app.user %}
+    <input id="token" type="hidden" data-token="{{ csrf_token(app.user.id) }}">
+{% else %}
+    <input id="token" type="hidden" data-token="">
+{% endif %}
+
 {% if app.user == null %}
 {% set isUserActive = false %}
 {% else %}

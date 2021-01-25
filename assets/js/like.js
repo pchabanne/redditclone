@@ -1,10 +1,11 @@
 function onClickBtnLike(event){
     event.preventDefault();
     const url = this.href;
+    const token = document.querySelector('#token').dataset.token;
     const spanCount =  this.parentNode.querySelector(".count-likes");
     const iconeUp = this;
     const iconeDown = this.parentNode.querySelector(".js-dislike-link");
-    axios.get(url).then(function(response){
+    axios.post(url, {token:token}).then(function(response){
         spanCount.textContent = response.data.count
         const message = response.data.message;
         if(message=='like added'){
@@ -25,10 +26,11 @@ function onClickBtnLike(event){
 function onClickBtnDislike(event){
     event.preventDefault();
     const url = this.href;
+    const token = document.querySelector('#token').dataset.token;
     const spanCount =  this.parentNode.querySelector(".count-likes");
     const iconeUp = this.parentNode.querySelector(".js-like-link");
     const iconeDown = this;
-    axios.get(url).then(function(response){
+    axios.post(url, {token:token}).then(function(response){
         spanCount.textContent = response.data.count
         const message = response.data.message;
         if(message=='dislike added'){

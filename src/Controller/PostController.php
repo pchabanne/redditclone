@@ -89,51 +89,58 @@ class PostController extends AbstractController
      * @param Post $post
      * @return void
      */
-    public function like(Post $post, PostLikeRepository $postLikeRepository){
+    public function like(Post $post, PostLikeRepository $postLikeRepository, Request $request){
         $user = $this->getUser();
         if (!$user) {
             return $this->json(['message'=>'Unauthorized'], 403);
         }
-        if($post->isLikedByUser($this->getUser())){
-            $like = $postLikeRepository->findOneBy([
-                'post'=>$post,
-                'user'=>$user,
-                ]);
-            $this->em->remove($like);
+        $content = $request->getContent();
+        $requestdata = json_decode($content,true);
+        $token = $requestdata["token"];
+        $isTokenValid = $this->isCsrfTokenValid($user->getId(), $token);
+        if($isTokenValid){
+            if($post->isLikedByUser($this->getUser())){
+                $like = $postLikeRepository->findOneBy([
+                    'post'=>$post,
+                    'user'=>$user,
+                    ]);
+                $this->em->remove($like);
+                $this->em->flush();
+
+                return $this->json([
+                    'message'=>'like deleted',
+                    'count'=>$post->getCountLikes(),
+                ], 200);
+            }
+
+            if($post->isDislikedByUser($this->getUser())){
+                $like = $postLikeRepository->findOneBy([
+                    'post'=>$post,
+                    'user'=>$user,
+                    ]);
+                $like->setValue(true);
+                $this->em->persist($like);
+                $this->em->flush();
+
+                return $this->json([
+                    'message'=>'dislike deleted like added',
+                    'count'=>$post->getCountLikes(),
+                ], 200);
+            }
+
+            $like = new PostLike();
+            $like->setUser($user)->setValue(true);
+            $post->addLike($like);
+            $this->em->persist($post);
             $this->em->flush();
 
+
             return $this->json([
-                'message'=>'like deleted',
+                'message'=>'like added',
                 'count'=>$post->getCountLikes(),
             ], 200);
         }
-
-        if($post->isDislikedByUser($this->getUser())){
-            $like = $postLikeRepository->findOneBy([
-                'post'=>$post,
-                'user'=>$user,
-                ]);
-            $like->setValue(true);
-            $this->em->persist($like);
-            $this->em->flush();
-
-            return $this->json([
-                'message'=>'dislike deleted like added',
-                'count'=>$post->getCountLikes(),
-            ], 200);
-        }
-
-        $like = new PostLike();
-        $like->setUser($user)->setValue(true);
-        $post->addLike($like);
-        $this->em->persist($post);
-        $this->em->flush();
-
-
-        return $this->json([
-            'message'=>'like added',
-            'count'=>$post->getCountLikes(),
-        ], 200);
+        return $this->json(['message'=>'token invalid'], 403);
     }
 
     /**
@@ -142,52 +149,57 @@ class PostController extends AbstractController
      * @param Post $post
      * @return void
      */
-    public function dislike(Post $post, PostLikeRepository $postLikeRepository){
+    public function dislike(Post $post, PostLikeRepository $postLikeRepository, Request $request){
         $user = $this->getUser();
         if (!$user) {
             return $this->json(['message'=>'Unauthorized'], 403);
         }
-        
-        if($post->isLikedByUser($this->getUser())){
-            $like = $postLikeRepository->findOneBy([
-                'post'=>$post,
-                'user'=>$user,
-                ]);
-            $like->setValue(false);
-            $this->em->persist($like);
+        $content = $request->getContent();
+        $requestdata = json_decode($content,true);
+        $token = $requestdata["token"];
+        $isTokenValid = $this->isCsrfTokenValid($user->getId(), $token);
+        if($isTokenValid){
+            if($post->isLikedByUser($this->getUser())){
+                $like = $postLikeRepository->findOneBy([
+                    'post'=>$post,
+                    'user'=>$user,
+                    ]);
+                $like->setValue(false);
+                $this->em->persist($like);
+                $this->em->flush();
+
+                return $this->json([
+                    'message'=>'like deleted dislike added',
+                    'count'=>$post->getCountLikes(),
+                ], 200);
+            }
+
+            if($post->isDislikedByUser($this->getUser())){
+                $like = $postLikeRepository->findOneBy([
+                    'post'=>$post,
+                    'user'=>$user,
+                    ]);
+                $this->em->remove($like);
+                $this->em->flush();
+
+                return $this->json([
+                    'message'=>'dislike deleted',
+                    'count'=>$post->getCountLikes(),
+                ], 200);
+            }
+
+            $like = new PostLike();
+            $like->setUser($user)->setValue(false);
+            $post->addLike($like);
+            $this->em->persist($post);
             $this->em->flush();
 
+
             return $this->json([
-                'message'=>'like deleted dislike added',
+                'message'=>'dislike added',
                 'count'=>$post->getCountLikes(),
             ], 200);
         }
-
-        if($post->isDislikedByUser($this->getUser())){
-            $like = $postLikeRepository->findOneBy([
-                'post'=>$post,
-                'user'=>$user,
-                ]);
-            $this->em->remove($like);
-            $this->em->flush();
-
-            return $this->json([
-                'message'=>'dislike deleted',
-                'count'=>$post->getCountLikes(),
-            ], 200);
-        }
-
-        $like = new PostLike();
-        $like->setUser($user)->setValue(false);
-        $post->addLike($like);
-        $this->em->persist($post);
-        $this->em->flush();
-
-
-        return $this->json([
-            'message'=>'dislike added',
-            'count'=>$post->getCountLikes(),
-        ], 200);
+        return $this->json(['message'=>'token invalid'], 403);
     }
-    
 }

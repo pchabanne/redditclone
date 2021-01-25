@@ -3,6 +3,12 @@
 {% block title %}{{post.title}}{% endblock %}
 
 {% block body %}
+{% if app.user %}
+<input id="token" type="hidden" data-token="{{ csrf_token(app.user.id) }}">
+{% else %}
+    <input id="token" type="hidden" data-token="">
+{% endif %}
+
 <div class="bg-white col-md-12">
     <div class="card post mb-0">
         <div class="card-body">
