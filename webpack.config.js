@@ -22,7 +22,7 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('like', './assets/js/like.js')
-    .addEntry('home', './assets/js/ajaxHome.js')
+    .addEntry('ajaxGetPosts', './assets/js/ajaxGetPosts.js')
     .addEntry('createPost', './assets/js/createPost.js')
 
 

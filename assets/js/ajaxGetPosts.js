@@ -29,6 +29,13 @@ function formatDate(date){
 
 $(document).ready(function () {
     var should = true;
+    var data = document.querySelector('#page').dataset.page;
+    console.log(data);
+    if(data == "homepage"){
+        var url = '/get/posts'
+    }else{
+        var url = "/get/posts/"+data;
+    }
 
     $(window).scroll(function () {
 
@@ -39,7 +46,7 @@ $(document).ready(function () {
             should=false;
             var row = $('.card').length;
             $.ajax({
-                url: '/get/posts',
+                url: url,
                 type: 'get',
                 data: {
                     first: row,

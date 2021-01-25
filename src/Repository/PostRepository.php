@@ -60,6 +60,19 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findAllInSubredditOrderByDateAjax($first, $limit, $subreddit)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.subreddit = :subreddit')
+            ->orderBy('p.created_at', 'DESC')
+            ->setParameter('subreddit', $subreddit)
+            ->getQuery()
+            ->setFirstResult($first)
+            ->setMaxResults($limit)
+            ->getResult()
+        ;
+    }
+
     /**
      * return all posts of an user
      *

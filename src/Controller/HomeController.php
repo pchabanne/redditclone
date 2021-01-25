@@ -36,20 +36,19 @@ class HomeController extends AbstractController
 
 
     /**
-     * @Route("/get/posts", name="ajax_home_post")
+     * @Route("/get/posts", name="ajax_home_posts")
      *
      * @param PostRepository $postRepository
      * @param Request $request
      * @return Response
      */
-    public function ajax(Request $request) :Response{
+    public function ajaxHomepage(Request $request) :Response{
         $first = $request->query->get('first');
         $limit = $request->query->get('limit');
         $posts = $this->postRepository->findAllOrderByDateAjax($first, $limit);
         
         
         $postsJson = [];
-        $i = 0;
         foreach($posts as $post){
             $postJson = array();
             $postJson['title'] = $post->getTitle();
@@ -69,8 +68,6 @@ class HomeController extends AbstractController
                 $postJson['isLiked'] = false;
                 $postJson['isDisliked'] = false;
             }
-
-
 
             array_push($postsJson, $postJson);
         }

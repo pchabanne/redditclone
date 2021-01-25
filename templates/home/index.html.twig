@@ -9,6 +9,7 @@
     <input id="token" type="hidden" data-token="">
 {% endif %}
 
+<input id="page" type="hidden" data-page="homepage">
 
 {% if app.user == null %}
 {% set isUserActive = false %}
@@ -28,7 +29,7 @@
      {{ parent() }}
      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
      {{ encore_entry_script_tags('like') }}
-     {{ encore_entry_script_tags('home') }}
+     {{ encore_entry_script_tags('ajaxGetPosts') }}
      {{ encore_entry_script_tags('createPost') }}
      
  {% endblock %}

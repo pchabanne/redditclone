@@ -8,6 +8,9 @@
     <input id="token" type="hidden" data-token="">
 {% endif %}
 
+<input id="page" type="hidden" data-page="{{subreddit.title}}">
+
+
 {% if app.user == null %}
 {% set isUserActive = false %}
 {% else %}
@@ -25,6 +28,7 @@
      {{ parent() }}
      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
      {{ encore_entry_script_tags('like') }}
+     {{ encore_entry_script_tags('ajaxGetPosts') }}
      {{ encore_entry_script_tags('createPost') }}
  {% endblock %}
 {% endblock %}
