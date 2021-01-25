@@ -17,6 +17,8 @@ function onClickBtnLike(event){
             iconeUp.classList.add("is-liked");
             iconeDown.classList.remove("is-liked");
         }
+    }).catch(error => {
+        window.location.href= '/login';
     })
 }
 
@@ -39,6 +41,8 @@ function onClickBtnDislike(event){
             iconeUp.classList.remove("is-liked");
             iconeDown.classList.add("is-liked");
         }
+    }).catch(error => {
+        window.location.href= '/login';
     })
 }
 
