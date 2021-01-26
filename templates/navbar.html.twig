@@ -1,7 +1,14 @@
 <nav class="navbar bg-light mb-4 justify-content-between">
+  <div>
     <a class="navbar-brand" href="{{path('home')}}">Redditclone</a>
-     <div>
-   
+    <span class="search-span">
+    <form action="{{path('search')}}" method='get' class="search-form">
+      <label for="search"><i class="fas fa-search"></i></label>
+      <input class="search-input" name="search" type="text" placeholder="Search">
+    </form>
+    </span>
+  </div>
+  <div>
     {% if app.user == null %}
       <a class="navbar-brand" href="{{path('login')}}">Login</a>
       <a class="navbar-brand" href="{{path('register')}}">Sign up</a>
@@ -9,5 +16,5 @@
       <a>Hi {{app.user.username}} </a>
       <a class="navbar-brand" href="{{path('logout')}}">Log out</a>
     {% endif %}
-    </div> 
+  </div> 
 </nav>

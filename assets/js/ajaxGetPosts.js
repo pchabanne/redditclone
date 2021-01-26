@@ -33,7 +33,11 @@ $(document).ready(function () {
     console.log(data);
     if(data == "homepage"){
         var url = '/get/posts'
-    }else{
+    }else if(data=="searchpage"){
+        url = '/get/search'
+        var search = document.querySelector('#page').dataset.search;
+    }
+    else{
         var url = "/get/posts/"+data;
     }
 
@@ -50,7 +54,8 @@ $(document).ready(function () {
                 type: 'get',
                 data: {
                     first: row,
-                    limit: 5
+                    limit: 5,
+                    search: search
                 },
                 success: function (response) {
                     $.each(response, function (key, value) {

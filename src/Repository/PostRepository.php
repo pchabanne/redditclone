@@ -159,27 +159,22 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAllBySubreddit2($subreddit)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.subreddit = :subreddit')
-            ->select('p.title')
-            ->orderBy('p.created_at', 'DESC')
-            ->setParameter('subreddit', $subreddit)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+    /**
+     * return posts between $first and $limit that contains the $search
+     *
+     * @param string $search
+     * @param int $first
+     * @param int $limit
+     * @return Post[]
+     */
+  public function search($search, $first, $limit){
+      return $this->createQueryBuilder('p')
+        ->andWhere('p.title LIKE :search')
+        ->orderBy('p.created_at', 'DESC')
+        ->setParameter('search', '%'.$search.'%')
+        ->setFirstResult($first)
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
     }
-
-    /*
-    public function findOneBySomeField($value): ?Post
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

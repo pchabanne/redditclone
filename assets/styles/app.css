@@ -108,3 +108,13 @@
         padding: 3px;
         min-width: 54px;
     }
+    .search-input{
+        padding: 5px;
+        outline: none;
+    }
+    .search-span{
+        background-color: white;
+    }
+    .search-form{
+        display: inline;
+    }
