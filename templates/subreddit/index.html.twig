@@ -23,9 +23,9 @@
 <div class="d-flex justify-content-between align-items-baseline">
         <h1 class="data-subreddit">{{subreddit.title}}</h1>
         {% if isUserActive and app.user.isInSubreddit(subreddit) %}
-            <a class="btn btn-danger" href="{{path('subreddit.join', {'id':subreddit.id})}}">Unjoin</a>
+            <a class="btn btn-danger button-join" href="{{path('subreddit.join', {'id':subreddit.id})}}">Unjoin</a>
         {% else %}
-            <a class="btn btn-primary" href="{{path('subreddit.join', {'id':subreddit.id})}}">Join</a>
+            <a class="btn btn-primary button-join" href="{{path('subreddit.join', {'id':subreddit.id})}}">Join</a>
         {% endif %}
 </div>
     <textarea data-active-user="{{isUserActive}}" data-subreddit-title="{{subreddit.title}}" style="width:100%;" class="create-post" placeholder="Create a post"></textarea>
