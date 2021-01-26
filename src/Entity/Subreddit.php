@@ -42,12 +42,18 @@ class Subreddit
     private $users;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $userCounter;
+
+    /**
      * subreddit constructor
      */
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->userCounter = 0;
     }
 
     /**
@@ -139,6 +145,7 @@ class Subreddit
     {
         if (!$this->users->contains($user)) {
             $this->users[] = $user;
+            $this->userCounter = $this->userCounter+1;
         }
 
         return $this;
@@ -147,6 +154,19 @@ class Subreddit
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
+        $this->userCounter = $this->userCounter-1;
+
+        return $this;
+    }
+
+    public function getUserCounter(): ?int
+    {
+        return $this->userCounter;
+    }
+
+    public function setUserCounter(int $userCounter): self
+    {
+        $this->userCounter = $userCounter;
 
         return $this;
     }

@@ -36,9 +36,11 @@ class SearchController extends AbstractController
     {
         $search = $request->query->get('search');
         $posts = $this->postRepository->search($search, self::FIRST, self::LIMIT);
+        $subreddits = $this->subredditRepository->search($search, 0, 3);
 
         return $this->render('search/search.html.twig', [
             'search' => $search,
+            'subreddits' =>$subreddits,
             'posts' => $posts,
         ]);
     }

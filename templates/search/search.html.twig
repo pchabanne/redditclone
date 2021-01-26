@@ -3,6 +3,11 @@
 {% block title %}Hello SearchController!{% endblock %}
 
 {% block body %}
+{% if app.user == null %}
+{% set isUserActive = false %}
+{% else %}
+{% set isUserActive = true %}
+{% endif %}
 {% if app.user %}
     <input id="token" type="hidden" data-token="{{ csrf_token(app.user.id) }}">
 {% else %}
@@ -10,10 +15,23 @@
 {% endif %}
 <input id="page" type="hidden" data-page="searchpage" data-search="{{search}}">
 
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="row mb-5">
+<div class="col-md-5">
+{% for subreddit in subreddits %}
+    <div class="card">
+        <div class="card-body">
+            <a href="{{path('subreddit', {'title': subreddit.title})}}">r/{{subreddit.title}}</span>
+            {% if isUserActive and app.user.isInSubreddit(subreddit) %}
+            <a class="btn btn-danger button-join" href="{{path('subreddit.join', {'id':subreddit.id})}}">Unjoin</a>
+        {% else %}
+            <a class="btn btn-primary button-join" href="{{path('subreddit.join', {'id':subreddit.id})}}">Join</a>
+        {% endif %}
+        </div>
+    </div>
+{% endfor %}
+</div>
+</div>
+
 
 {% include "post/showPosts.html.twig" %}
 

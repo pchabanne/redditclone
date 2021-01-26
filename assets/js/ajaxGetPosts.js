@@ -61,7 +61,7 @@ $(document).ready(function () {
                     $.each(response, function (key, value) {
                         var date = new Date(value['date']);
                         var newdate = formatDate(date);
-                        var div = $('.card').first().clone();
+                        var div = $('.post-card').first().clone();
                         div.find('.subreddit-title').html(value['subreddit']);
                         div.find('.subreddit-title').attr('href', '/r/' + value['subreddit']);
                         div.find('.username').html(value['user']);

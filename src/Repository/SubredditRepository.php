@@ -35,6 +35,17 @@ class SubredditRepository extends ServiceEntityRepository
         ;
     }
 
+    public function search($search, $first, $limit){
+        return $this->createQueryBuilder('s')
+        ->andWhere('s.title LIKE :search')
+        ->orderBy('s.userCounter', 'DESC')
+        ->setParameter('search', '%'.$search.'%')
+        ->setFirstResult($first)
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
+    }
+
     // /**
     //  * @return Subreddit[] Returns an array of Subreddit objects
     //  */
