@@ -397,7 +397,7 @@ class User implements UserInterface, \Serializable
     }
 
     public function isInSubreddit($subreddit){
-        if (!$this->subreddits->contains($subreddit)) {
+        if ($this->subreddits->contains($subreddit)) {
             return true;
         }
         return false;

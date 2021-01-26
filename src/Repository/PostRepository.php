@@ -49,6 +49,13 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * return all posts order by date
+     *
+     * @param int $first
+     * @param int $limit
+     * @return Post[]
+     */
     public function findAllOrderByDateAjax($first, $limit)
     {
         return $this->createQueryBuilder('p')
@@ -60,6 +67,34 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * find all posts in an array of subreddits with first and limits
+     *
+     * @param int $first
+     * @param int $limit
+     * @param Subreddits[] $subreddits
+     * @return Post[]
+     */
+    public function findAllInSubredditsOrderByDateAjax($first, $limit, $subreddits){
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.subreddit IN (:subreddits)')
+             ->setParameter('subreddits', $subreddits)
+            ->orderBy('p.created_at', 'DESC')
+            ->getQuery()
+            ->setFirstResult($first)
+            ->setMaxResults($limit)
+            ->getResult()
+        ;
+    }
+
+    /**
+     * find all post in a subreddit with first and limits
+     *
+     * @param int $first
+     * @param int $limit
+     * @param Subreddit $subreddit
+     * @return Post[]
+     */
     public function findAllInSubredditOrderByDateAjax($first, $limit, $subreddit)
     {
         return $this->createQueryBuilder('p')
@@ -90,6 +125,12 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * return a post by its id
+     *
+     * @param int $id
+     * @return Post
+     */
     public function findOneByID($id){
         return $this->createQueryBuilder('p')
             ->andWhere('p.id = :id')
@@ -105,7 +146,7 @@ class PostRepository extends ServiceEntityRepository
      * return all posts from the subreddit
      *
      * @param Subreddit $subreddit
-     * @return void
+     * @return Post[]
      */
     public function findAllBySubreddit($subreddit)
     {

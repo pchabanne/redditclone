@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     private $postRepository;
+    const FIRST = 0;
+    const LIMIT = 8;
 
     public function __construct(PostRepository $postRepository)
     {
@@ -26,14 +28,27 @@ class HomeController extends AbstractController
      * @param PostRepository $postRepository
      * @return Response
      */
-    public function index(PostRepository $postRepository): Response
+    public function index(): Response
     {
-        $posts = $postRepository->findAllOrderByDateAjax(0,8);
+        $user = $this->getUser();
+        if(!$user){
+            $posts = $this->postRepository->findAllOrderByDateAjax(self::FIRST,self::LIMIT);
+            return $this->render('home/index.html.twig', [
+                'posts' => $posts,
+            ]);
+        }
+
+        $subreddits = $user->getSubreddits();
+        if($subreddits->isEmpty()){
+            $posts = $this->postRepository->findAllOrderByDateAjax(self::FIRST,self::LIMIT);
+        }else{
+            $posts = $this->postRepository->findAllInSubredditsOrderByDateAjax(self::FIRST,self::LIMIT, $subreddits);
+        }
+
         return $this->render('home/index.html.twig', [
             'posts' => $posts,
         ]);
     }
-
 
     /**
      * @Route("/get/posts", name="ajax_home_posts")
@@ -43,9 +58,19 @@ class HomeController extends AbstractController
      * @return Response
      */
     public function ajaxHomepage(Request $request) :Response{
+        $user = $this->getUser();
         $first = $request->query->get('first');
         $limit = $request->query->get('limit');
-        $posts = $this->postRepository->findAllOrderByDateAjax($first, $limit);
+        if(!$user){
+            $posts = $this->postRepository->findAllOrderByDateAjax($first, $limit);
+        }else{
+            $subreddits = $user->getSubreddits();
+            if($subreddits->isEmpty()){
+                $posts = $this->postRepository->findAllOrderByDateAjax($first,$limit);
+            }else{
+                $posts = $this->postRepository->findAllInSubredditsOrderByDateAjax($first,$limit, $subreddits);
+            }
+        }
         
         
         $postsJson = [];
