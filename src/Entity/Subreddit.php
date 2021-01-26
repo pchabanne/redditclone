@@ -37,11 +37,17 @@ class Subreddit
     private $posts;
 
     /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="subreddits")
+     */
+    private $users;
+
+    /**
      * subreddit constructor
      */
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -117,6 +123,30 @@ class Subreddit
                 $post->setSubreddit(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        $this->users->removeElement($user);
 
         return $this;
     }

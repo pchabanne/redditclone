@@ -67,6 +67,11 @@ class User implements UserInterface, \Serializable
     private $likes;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Subreddit::class, mappedBy="users")
+     */
+    private $subreddits;
+
+    /**
      * user constructor
      */
     public function __construct()
@@ -75,6 +80,7 @@ class User implements UserInterface, \Serializable
         $this->comments = new ArrayCollection();
         $this->roles = ['ROLE_USER'];
         $this->likes = new ArrayCollection();
+        $this->subreddits = new ArrayCollection();
     }
 
     /**
@@ -361,5 +367,39 @@ class User implements UserInterface, \Serializable
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Subreddit[]
+     */
+    public function getSubreddits(): Collection
+    {
+        return $this->subreddits;
+    }
+
+    public function addSubreddit(Subreddit $subreddit): self
+    {
+        if (!$this->subreddits->contains($subreddit)) {
+            $this->subreddits[] = $subreddit;
+            $subreddit->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubreddit(Subreddit $subreddit): self
+    {
+        if ($this->subreddits->removeElement($subreddit)) {
+            $subreddit->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function isInSubreddit($subreddit){
+        if (!$this->subreddits->contains($subreddit)) {
+            return true;
+        }
+        return false;
     }
 }

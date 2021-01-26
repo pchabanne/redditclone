@@ -51,6 +51,32 @@ class SubredditController extends AbstractController
     }
 
     /**
+     * Undocumented function
+     * @Route("join/{id}", name="subreddit.join")
+     * @param [type] $id
+     * @return void
+     */
+    public function joinSubreddit($id){
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+        $subreddit = $this->subredditRepository->findOneBy(['id'=>$id]);
+        $subreddits = $user->getSubreddits();
+        if (!$subreddits->contains($subreddit)) {
+            $user->addSubreddit($subreddit);
+        }else{
+            $user->removeSubreddit($subreddit);
+        }
+
+        $this->em->persist($user);
+        $this->em->flush();
+
+        return $this->redirectToRoute('subreddit',['title'=>$subreddit->getTitle()]);
+
+    }
+
+    /**
      * @Route("/get/posts/{title}", name="ajax_subreddit_posts")
      *
      * @param [type] $title
