@@ -62,7 +62,7 @@ $(document).ready(function () {
                         var date = new Date(value['date']);
                         var newdate = formatDate(date);
                         var div = $('.post-card').first().clone();
-                        div.find('.subreddit-title').html(value['subreddit']);
+                        div.find('.subreddit-title').html('r/'+value['subreddit']);
                         div.find('.subreddit-title').attr('href', '/r/' + value['subreddit']);
                         div.find('.username').html(value['user']);
                         div.find('.username').attr('href', '/user/' + value['user']);
